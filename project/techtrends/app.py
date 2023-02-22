@@ -13,8 +13,6 @@ log = logging.getLogger(__name__)
 
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
-
-
 def get_db_connection():
     global db_connection_cnt
     connection = sqlite3.connect('project/techtrends/database.db')
@@ -23,8 +21,6 @@ def get_db_connection():
     return connection
 
 # Function to get a post using its ID
-
-
 def get_post(post_id):
     connection = get_db_connection()
     post = connection.execute('SELECT * FROM posts WHERE id = ?',
@@ -38,8 +34,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
 # Define the main route of the web application
-
-
 @app.route('/')
 def index():
     global post_cnt
@@ -52,8 +46,6 @@ def index():
 
 # Define how each individual article is rendered
 # If the post ID is not found a 404 page is shown
-
-
 @app.route('/<int:post_id>')
 def post(post_id):
     post = get_post(post_id)
@@ -66,16 +58,12 @@ def post(post_id):
         return render_template('post.html', post=post)
 
 # Define the About Us page
-
-
 @app.route('/about')
 def about():
     log.debug("about endpoint accessed, rendering 'about.html'")
     return render_template('about.html')
 
 # Define the post creation functionality
-
-
 @app.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
@@ -101,8 +89,6 @@ def create():
 
 # healthz REST route.
 # Will return "OK - healthy" if the application is running
-
-
 @app.route("/healthz")
 def healthz():
     '''
@@ -121,8 +107,6 @@ def healthz():
 # metrics REST route.
 # will return the number of times each endpoint has been accessed. Plus the uptime for the
 # application.
-
-
 @app.route("/metrics")
 def metrics():
     '''
