@@ -27,10 +27,10 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DHUB_USERNAME }}
-          password: ${{ secrets.DHUB_PWD }}
+          password: ${{ secrets.DHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v2
