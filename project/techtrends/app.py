@@ -8,31 +8,38 @@ db_connection_cnt = 0
 post_cnt = 0
 
 # Stream logs to a file, and set the default log level to DEBUG
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
+
+
 def get_db_connection():
     global db_connection_cnt
-    connection = sqlite3.connect('database.db')
+    connection = sqlite3.connect('project/techtrends/database.db')
     connection.row_factory = sqlite3.Row
     db_connection_cnt += 1
     return connection
 
 # Function to get a post using its ID
+
+
 def get_post(post_id):
     connection = get_db_connection()
     post = connection.execute('SELECT * FROM posts WHERE id = ?',
-                        (post_id,)).fetchone()
+                              (post_id,)).fetchone()
     connection.close()
     return post
+
 
 # Define the Flask application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
 # Define the main route of the web application
+
+
 @app.route('/')
 def index():
     global post_cnt
@@ -45,23 +52,30 @@ def index():
 
 # Define how each individual article is rendered
 # If the post ID is not found a 404 page is shown
+
+
 @app.route('/<int:post_id>')
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-      log.error("404, Post %i not found.", post_id)
-      return render_template('404.html'), 404
+        log.error("404, Post %i not found.", post_id)
+        return render_template('404.html'), 404
     else:
-      log.info("Displaying post %-4i with title '%s'", post_id, post['title'])
-      return render_template('post.html', post=post)
+        log.info("Displaying post %-4i with title '%s'",
+                 post_id, post['title'])
+        return render_template('post.html', post=post)
 
 # Define the About Us page
+
+
 @app.route('/about')
 def about():
     log.debug("about endpoint accessed, rendering 'about.html'")
     return render_template('about.html')
 
 # Define the post creation functionality
+
+
 @app.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
@@ -74,11 +88,12 @@ def create():
         else:
             connection = get_db_connection()
             cursor = connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
-                         (title, content))
+                                        (title, content))
             connection.commit()
             connection.close()
 
-            log.info("Created post %-4i with title '%s'", cursor.lastrowid, title)
+            log.info("Created post %-4i with title '%s'",
+                     cursor.lastrowid, title)
 
             return redirect(url_for('index'))
 
@@ -86,6 +101,8 @@ def create():
 
 # healthz REST route.
 # Will return "OK - healthy" if the application is running
+
+
 @app.route("/healthz")
 def healthz():
     '''
@@ -93,16 +110,19 @@ def healthz():
     Will return "OK - healthy" if the application is running
     '''
     response = app.response_class(
-        response = json.dumps({"result":"OK - healthy"}),
-        status = 200,
-        mimetype = 'application/json'
+        response=json.dumps({"result": "OK - healthy"}),
+        status=200,
+        mimetype='application/json'
     )
-    log.info('healthz request successful response=%s', json.dumps(response.json))
+    log.info('healthz request successful response=%s',
+             json.dumps(response.json))
     return response
 
 # metrics REST route.
 # will return the number of times each endpoint has been accessed. Plus the uptime for the
 # application.
+
+
 @app.route("/metrics")
 def metrics():
     '''
@@ -113,13 +133,16 @@ def metrics():
     global post_cnt
     global db_connection_cnt
     response = app.response_class(
-        response = json.dumps({"db_connection_count": db_connection_cnt, "post_count": post_cnt}),
-        status = 200,
-        mimetype = 'application/json'
+        response=json.dumps(
+            {"db_connection_count": db_connection_cnt, "post_count": post_cnt}),
+        status=200,
+        mimetype='application/json'
     )
-    log.debug('metrics request successful response=%s', json.dumps(response.json))
+    log.debug('metrics request successful response=%s',
+              json.dumps(response.json))
     return response
+
 
 # start the application on port 3111
 if __name__ == "__main__":
-   app.run(host='0.0.0.0', port='3111')
+    app.run(host='0.0.0.0', port='3111')
