@@ -41,5 +41,5 @@ jobs:
           platforms: linux/amd64
           push: true
           # The image gets pushed with this tag.
-          tags: techtrends:latest
+          tags: rbriley/techtrends:latest
 ...
