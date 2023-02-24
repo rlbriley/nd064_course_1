@@ -36,11 +36,11 @@ spec:
 
         resources:
           requests:
-            cpu: {{ .Values.resourceRequestCpu }}
-            memory: {{ .Values.resourceRequestMem }}
+            cpu: {{ .Values.resourcesRequestCpu }}
+            memory: {{ .Values.resourcesRequestMem }}
           limits:
-            cpu: {{ .Values.resourceLimitsCpu }}
-            memory: {{ .Values.resourceLimitsMem }}
+            cpu: {{ .Values.resourcesLimitsCpu }}
+            memory: {{ .Values.resourcesLimitsMem }}
 
         readinessProbe:
           httpGet:
@@ -51,7 +51,7 @@ spec:
 
         livenessProbe:
           httpGet:
-            path: {{ .Values.livenessnessProbePath }}
+            path: {{ .Values.livenessProbePath }}
             port: techtrends-port
           initialDelaySeconds: 5
           periodSeconds: 15
