@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.appname }}
+    tag: {{ .Values.imageTag }}
+  name: {{ .Values.appname }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appname }}
+      tag: {{ .Values.imageTag }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appname }}
+        tag: {{ .Values.imageTag }}
+    spec:
+      containers:
+      - name: {{ .Values.appname }}
+        image: rbriley/techtrends:{{ .Values.imageTag }}
+        imagePullPolicy: IfNotPresent
+
+        ports:
+          - name: techtrends-port
+            containerPort: {{ .Values.containerPort }}
+            protocol: {{ .Values.containerProtocol }}
+
+        resources:
+          requests:
+            cpu: {{ .Values.resourceRequestCpu }}
+            memory: {{ .Values.resourceRequestMem }}
+          limits:
+            cpu: {{ .Values.resourceLimitsCpu }}
+            memory: {{ .Values.resourceLimitsMem }}
+
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.readinessProbePath }}
+            port: techtrends-port
+          initialDelaySeconds: 1
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.livenessnessProbePath }}
+            port: techtrends-port
+          initialDelaySeconds: 5
+          periodSeconds: 15
+...
