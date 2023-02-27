@@ -6,6 +6,7 @@ from werkzeug.exceptions import abort
 
 db_connection_cnt = 0
 post_cnt = 0
+db_error = False
 
 # Stream logs to a file, and set the default log level to DEBUG
 logging.basicConfig(level=logging.DEBUG)
@@ -22,9 +23,17 @@ def get_db_connection():
 
 # Function to get a post using its ID
 def get_post(post_id):
+    global db_error
     connection = get_db_connection()
-    post = connection.execute('SELECT * FROM posts WHERE id = ?',
-                              (post_id,)).fetchone()
+    if db_error is False:
+        try:
+            post = connection.execute('SELECT * FROM posts WHERE id = ?',
+                                     (post_id,)).fetchone()
+            db_error = False
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            db_error = True
     connection.close()
     return post
 
@@ -37,11 +46,19 @@ app.config['SECRET_KEY'] = 'your secret key'
 @app.route('/')
 def index():
     global post_cnt
+    global db_error
     connection = get_db_connection()
-    posts = connection.execute('SELECT * FROM posts').fetchall()
-    connection.close()
-    post_cnt = len(posts)
-    log.debug("Database contains %i posts", post_cnt)
+    if db_error is False:
+        try:
+            posts = connection.execute('SELECT * FROM posts').fetchall()
+            connection.close()
+            post_cnt = len(posts)
+            db_error = False
+            log.debug("Database contains %i posts", post_cnt)
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            db_error = True
     return render_template('index.html', posts=posts)
 
 # Define how each individual article is rendered
@@ -66,6 +83,7 @@ def about():
 # Define the post creation functionality
 @app.route('/create', methods=('GET', 'POST'))
 def create():
+    global db_error
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -75,15 +93,21 @@ def create():
             flash('Title is required!')
         else:
             connection = get_db_connection()
-            cursor = connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
-                                        (title, content))
-            connection.commit()
-            connection.close()
+            if db_error is False:
+                try:
+                    cursor = connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
+                                                (title, content))
+                    connection.commit()
+                    connection.close()
+                    db_error = False
 
-            log.info("Created post %-4i with title '%s'",
-                     cursor.lastrowid, title)
+                    log.info("Created post %-4i with title '%s'",
+                            cursor.lastrowid, title)
 
-            return redirect(url_for('index'))
+                except sqlite3.Error as er:
+                    print('SQLite error: %s' % (' '.join(er.args)))
+                    print("Exception class is: ", er.__class__)
+                    db_error = True
 
     return render_template('create.html')
 
@@ -95,11 +119,19 @@ def healthz():
     healthz REST route.
     Will return "OK - healthy" if the application is running
     '''
-    response = app.response_class(
-        response=json.dumps({"result": "OK - healthy"}),
-        status=200,
-        mimetype='application/json'
-    )
+    global db_error
+    if db_error is False:
+        response = app.response_class(
+            response=json.dumps({"result": "OK - healthy"}),
+            status=200,
+            mimetype='application/json'
+        )
+    else:
+        response = app.response_class(
+            response=json.dumps({"result": "ERROR - unhealthy"}),
+            status=500,
+            mimetype='application/json'
+        )
     log.info('healthz request successful response=%s',
              json.dumps(response.json))
     return response
