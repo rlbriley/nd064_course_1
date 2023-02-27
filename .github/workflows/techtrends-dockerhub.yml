@@ -58,6 +58,8 @@ jobs:
           platforms: linux/amd64
           push: true
           # The image gets pushed with this tag.
-          tags: rbriley/techtrends:latest ${{ steps.meta.outputs.tags }}
+          tags: |
+            rbriley/techtrends:latest
+            rbriley/techtrends:${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 ...
