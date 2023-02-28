@@ -8,6 +8,8 @@ on:
     branches: [ main ]
     tags:
       - "*.*.*"
+  pull_request:
+    branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,7 +38,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
