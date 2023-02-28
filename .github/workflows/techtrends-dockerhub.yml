@@ -8,8 +8,8 @@ on:
     branches: [ main ]
     tags:
       - "*.*.*"
-  pull_request:
-    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -33,11 +33,9 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
+            type=ref,event=tag
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=pep440,pattern={{version}},value=0.0.1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
