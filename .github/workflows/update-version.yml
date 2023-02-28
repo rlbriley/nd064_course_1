@@ -1,11 +1,17 @@
 ---
-name: "TechTrends - Package with Docker"
+name: "TechTrends - Update the version tag"
 
 # Controls when the action will run. Triggers the workflow on push request
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches:
+      - 'main'
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - 'main'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -18,6 +24,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            rbriley/techtrends
+          flavor: |
+            latest=auto
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{version}}
+            type=ref,event=pr
+#            type=ref,event=branch
+#            type=ref,event=tag
+#            type=match,pattern=\d.\d.\d
+#            type=semver,pattern={{version}},value=1.0.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -38,5 +64,8 @@ jobs:
           file: ./project/Dockerfile
           platforms: linux/amd64
           push: true
+#          push: ${{ github.event_name != 'pull_request' }}
           # The image gets pushed with this tag.
-          tags: rbriley/techtrends:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+...
