@@ -5,9 +5,13 @@ name: "TechTrends - Package with Docker"
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches:
+      - 'main'
     tags:
-      - "*.*.*"
+      - '*.*.*'
+  pull_request:
+    branches:
+      - 'main'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -29,14 +33,14 @@ jobs:
           images: |
             rbriley/techtrends
           # generate Docker tags based on the following events/attributes
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=match,pattern=\d.\d.\d
-            type=semver,pattern={{version}}
-            type=semver,pattern={{version}},value=1.0.0
-            type=semver,pattern={{major}}.{{minor}}
+#          tags: |
+#            type=ref,event=branch
+#            type=ref,event=pr
+#            type=ref,event=tag
+#            type=match,pattern=\d.\d.\d
+#            type=semver,pattern={{version}}
+#            type=semver,pattern={{version}},value=1.0.0
+#            type=semver,pattern={{major}}.{{minor}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -58,7 +62,6 @@ jobs:
           platforms: linux/amd64
           push: true
           # The image gets pushed with this tag.
-          tags: |
-            ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 ...
