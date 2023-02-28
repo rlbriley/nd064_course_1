@@ -32,18 +32,14 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             rbriley/techtrends
-          flavor: |
-            latest=auto
           # generate Docker tags based on the following events/attributes
           tags: |
+            type=schedule
             type=ref,event=branch
             type=ref,event=pr
+            type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=semver,pattern={{version}}
-            type=ref,event=tag
-#            type=match,pattern=\d.\d.\d
-#            type=semver,pattern={{version}},value=1.0.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -63,8 +59,7 @@ jobs:
           context: ./project
           file: ./project/Dockerfile
           platforms: linux/amd64
-          push: true
-#          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' }}
           # The image gets pushed with this tag.
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
