@@ -4,19 +4,21 @@ name: "TechTrends - Update the version tag"
 # Controls when the action will run. Triggers the workflow on push request
 # events but only for the main branch
 on:
+  schedule:
+    - cron: "0 10 * * *"
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - '*.*.*'
+      - "v*.*.*"
   pull_request:
     branches:
-      - 'main'
+      - "main"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  docker:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -40,6 +42,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            type=sha
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -48,6 +51,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
+        if: github.event_name ! 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DHUB_USERNAME }}
