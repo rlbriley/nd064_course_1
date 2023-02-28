@@ -30,7 +30,7 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             rbriley/techtrends
-            rbriley/techtrends
+#            rbriley/techtrends
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -38,6 +38,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            type=pep440,pattern={{version}},value=0.0.1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
