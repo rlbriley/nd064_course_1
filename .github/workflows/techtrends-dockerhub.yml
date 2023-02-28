@@ -5,7 +5,8 @@ name: "TechTrends - Package with Docker"
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches:
+      - 'main'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -39,4 +40,4 @@ jobs:
           platforms: linux/amd64
           push: true
           # The image gets pushed with this tag.
-          tags: rbriley/techtrends:1.0.0
+          tags: rbriley/techtrends:v1.0.0
