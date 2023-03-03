@@ -27,7 +27,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: rlbriley/nd064_course_1
+          repository: rlbriley/nd064_course_1
+          ref: main
 
       - name: Docker meta
         id: meta
