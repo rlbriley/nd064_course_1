@@ -26,9 +26,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: rlbriley/nd064_course_1
-          ref: project1
+#        with:
+#          repository: rlbriley/nd064_course_1
+#          ref: project1
 
       - name: Docker meta
         id: meta
@@ -44,6 +44,15 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+
+      - name: Test1
+        run: |
+          docker run --rm ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+
+
+      - name: Test2
+        run: |
+          docker run --rm ${{ fromJSON(steps.build.outputs.metadata)['containerimage.config.digest'] }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
