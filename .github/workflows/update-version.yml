@@ -4,8 +4,6 @@ name: "TechTrends - Update the version tag"
 # Controls when the action will run. Triggers the workflow on push request
 # events but only for the main branch
 on:
-  schedule:
-    - cron: "0 10 * * *"
   push:
     branches:
       - "main"
@@ -36,13 +34,11 @@ jobs:
             rbriley/techtrends
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
