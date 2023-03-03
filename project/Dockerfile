@@ -5,7 +5,7 @@ LABEL maintainer="Richard L. Briley Jr." \
       org.opencontainers.image.version="v1.0.1" \
       org.opencontainers.image.url="" \
       org.opencontainers.image.documentation="" \
-      org.opencontainers.image.source='https://opendev.org/airship/armada' \
+      org.opencontainers.image.source="https://github.com/rlbriley/nd064_course_1" \
       org.opencontainers.image.vendor="None" \
       version="v1.0.1"
 COPY ./techtrends /app
