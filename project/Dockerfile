@@ -1,7 +1,7 @@
 FROM python:3.8
 # Maintainer label is deprecated.
 LABEL maintainer="Richard L. Briley Jr."
-LABEL version="1.0.1"
+LABEL version="v1.0.1"
 COPY ./techtrends /app
 WORKDIR /app
 EXPOSE 3111:3111

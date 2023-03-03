@@ -5,8 +5,8 @@ name: "TechTrends - Update the version tag"
 # events but only for the main branch
 on:
   push:
-    branches:
-      - "main"
+#    branches:
+#      - "main"
     tags:
       - "v*.*.*"
   pull_request:
@@ -14,6 +14,7 @@ on:
       - "main"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+concurrency: production
 jobs:
   # This workflow contains a single job called "build"
   docker:
