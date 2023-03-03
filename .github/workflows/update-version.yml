@@ -26,9 +26,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-#        with:
-#          repository: rlbriley/nd064_course_1
-#          ref: project1
 
       - name: Docker meta
         id: meta
@@ -37,6 +34,12 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             rbriley/techtrends
+          labels: |
+            maintainer=Richard L. Briley Jr.
+            org.opencontainers.image.title=Udacity Project1
+            org.opencontainers.image.description=First poject for Udacity
+            org.opencontainers.image.vendor=None
+            org.opencontainers.image.version=v1.0.1
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -44,15 +47,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-
-      - name: Test1
-        run: |
-          docker run --rm ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
-
-
-      - name: Test2
-        run: |
-          docker run --rm ${{ fromJSON(steps.build.outputs.metadata)['containerimage.config.digest'] }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
