@@ -1,8 +1,13 @@
 FROM python:3.8
 # Maintainer label is deprecated.
-LABEL maintainer="Richard L. Briley Jr."
-LABEL version="v1.0.1"
-LABEL org.opencontainers.image.version="v1.0.1"
+LABEL maintainer="Richard L. Briley Jr." \
+      org.opencontainers.image.authors="Richard L. Briley Jr." \
+      org.opencontainers.image.version="v1.0.1" \
+      org.opencontainers.image.url="" \
+      org.opencontainers.image.documentation="" \
+      org.opencontainers.image.source='https://opendev.org/airship/armada' \
+      org.opencontainers.image.vendor="None" \
+      version="v1.0.1"
 COPY ./techtrends /app
 WORKDIR /app
 EXPOSE 3111:3111
