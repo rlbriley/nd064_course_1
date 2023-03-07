@@ -31,8 +31,7 @@ def get_post(post_id):
                                      (post_id,)).fetchone()
             db_error = False
         except sqlite3.Error as er:
-            print('SQLite error: %s' % (' '.join(er.args)))
-            print("Exception class is: ", er.__class__)
+            log.exception(er)
             db_error = True
     connection.close()
     return post
@@ -56,8 +55,7 @@ def index():
             db_error = False
             log.debug("Database contains %i posts", post_cnt)
         except sqlite3.Error as er:
-            print('SQLite error: %s' % (' '.join(er.args)))
-            print("Exception class is: ", er.__class__)
+            log.exception(er)
             db_error = True
     return render_template('index.html', posts=posts)
 
@@ -105,8 +103,7 @@ def create():
                             cursor.lastrowid, title)
 
                 except sqlite3.Error as er:
-                    print('SQLite error: %s' % (' '.join(er.args)))
-                    print("Exception class is: ", er.__class__)
+                    log.exception(er)
                     db_error = True
 
     return render_template('create.html')
