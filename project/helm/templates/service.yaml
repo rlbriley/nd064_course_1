@@ -9,11 +9,11 @@ spec:
   ports:
   - name: http
     port: {{ .Values.servicePort }}
-{{- if .Values.serviceTargetPort -}}
+{{- if .Values.serviceTargetPort }}
     targetPort: {{ .Values.serviceTargetPort }}
-{{- else if .Values.servicePort -}}
+{{- else if .Values.servicePort }}
     targetPort: {{ .Values.servicePort }}
-{{- end -}}
+{{- end }}
     protocol: {{ .Values.serviceProtocol }}
   selector:
     app: {{ .Values.appname }}
